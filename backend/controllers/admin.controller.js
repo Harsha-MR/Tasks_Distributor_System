@@ -86,6 +86,42 @@ export const getAgents = async (req, res) => {
   }
 };
 
+export const getAgentTasks = async (req, res) => {
+  try {
+    const { agentId } = req.params;
+
+    // Check if agent exists and belongs to the current admin
+    const agent = await Agent.findOne({
+      _id: agentId,
+      admin: req.user._id
+    });
+
+    if (!agent) {
+      return res.status(404).json({
+        success: false,
+        message: 'Agent not found or unauthorized'
+      });
+    }
+
+    // Get all tasks assigned to the agent
+    const tasks = await Task.find({
+      assignedTo: agentId,
+      assignedBy: req.user._id
+    }).sort({ createdAt: -1 }); // Sort by newest first
+
+    res.status(200).json({
+      success: true,
+      data: tasks
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching agent tasks',
+      error: error.message
+    });
+  }
+};
+
 export const uploadAndDistributeTasks = async (req, res) => {
   try {
     if (!req.file) {
