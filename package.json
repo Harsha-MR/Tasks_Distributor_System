@@ -1,0 +1,14 @@
+{
+  "name": "cs-tech",
+  "version": "1.0.0",
+  "description": "CS Tech MERN Application",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+    "install-deps": "concurrently \"cd backend && npm install\" \"cd frontend && npm install\"",
+    "dev": "npm run install-deps && npm start"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
