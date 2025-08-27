@@ -77,15 +77,34 @@ const AgentTasks = () => {
         distribution[subAgentId] = agentTasks;
       });
 
-      await api.post('/agent/tasks/distribute', {
+      const response = await api.post('/agent/tasks/distribute', {
         distribution: distribution
       });
 
-      toast.success('Tasks distributed successfully');
-      navigate('/agent');
+      if (response.data.success) {
+        toast.success('Tasks distributed successfully');
+        
+        // Remove distributed tasks from the current tasks list
+        setTasks(prevTasks => prevTasks.filter(task => !selectedTasks.includes(task._id)));
+        
+        // Clear selections
+        setSelectedTasks([]);
+        setSelectedSubAgents([]);
+        
+        // Refresh sub-agents data to show updated task counts
+        try {
+          const subAgentsResponse = await api.get('/agent/sub-agents');
+          setSubAgents(subAgentsResponse.data.data);
+        } catch (error) {
+          console.error('Error refreshing sub-agents:', error);
+        }
+      } else {
+        toast.error('Failed to distribute tasks');
+      }
     } catch (error) {
       console.error('Error distributing tasks:', error);
-      toast.error('Failed to distribute tasks. Please try again.');
+      const errorMessage = error.response?.data?.message || 'Failed to distribute tasks. Please try again.';
+      toast.error(errorMessage);
     } finally {
       setDistributing(false);
     }

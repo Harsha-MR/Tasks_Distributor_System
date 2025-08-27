@@ -4,15 +4,15 @@
 
 @layer components {
   .btn-primary {
-    @apply px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors;
+    @apply px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
   }
   
   .btn-secondary {
-    @apply px-4 py-2 bg-secondary text-white rounded-md hover:bg-secondary/90 transition-colors;
+    @apply px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
   }
   
   .form-input {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50;
+    @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50;
   }
   
   .form-label {
@@ -21,5 +21,23 @@
   
   .card {
     @apply bg-white rounded-lg shadow-md p-6;
+  }
+}
+
+@layer utilities {
+  .text-primary {
+    @apply text-blue-600;
+  }
+  
+  .border-primary {
+    @apply border-blue-600;
+  }
+  
+  .bg-primary\/5 {
+    @apply bg-blue-600/5;
+  }
+  
+  .focus\:ring-primary {
+    @apply focus:ring-blue-500;
   }
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import api from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/Navbar';
@@ -9,26 +9,34 @@ const AgentDashboard = () => {
   const [subAgents, setSubAgents] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const location = useLocation();
+
+  const fetchData = async () => {
+    try {
+      const [tasksResponse, subAgentsResponse] = await Promise.all([
+        api.get('/agent/tasks'),
+        api.get('/agent/sub-agents')
+      ]);
+      
+      setTasks(tasksResponse.data.data);
+      setSubAgents(subAgentsResponse.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [tasksResponse, subAgentsResponse] = await Promise.all([
-          api.get('/agent/tasks'),
-          api.get('/agent/sub-agents')
-        ]);
-        
-        setTasks(tasksResponse.data.data);
-        setSubAgents(subAgentsResponse.data.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, []);
+
+  // Refresh data when returning to dashboard
+  useEffect(() => {
+    if (location.pathname === '/agent') {
+      fetchData();
+    }
+  }, [location.pathname]);
 
   return (
     <>

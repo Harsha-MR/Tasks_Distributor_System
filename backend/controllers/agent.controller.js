@@ -120,7 +120,7 @@ export const distributeTasksToSubAgents = async (req, res) => {
     await Task.bulkWrite(updates);
 
     // Update sub-agents with their tasks
-    const updatedTasks = await Task.find({ _id: { $in: taskIds } });
+    const updatedTasks = await Task.find({ _id: { $in: allTaskIds } });
     const taskMap = updatedTasks.reduce((acc, task) => {
       if (!acc[task.assignedTo]) {
         acc[task.assignedTo] = [];
